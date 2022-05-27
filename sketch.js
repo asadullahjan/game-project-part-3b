@@ -2,6 +2,8 @@ var gameChar_x;
 var gameChar_y;
 var floorPos_y;
 
+var collectable;
+
 var isLeft;
 var isRight;
 var isFalling;
@@ -14,6 +16,8 @@ function setup()
 	floorPos_y = height * 3/4;
 	gameChar_x = width/2;
 	gameChar_y = floorPos_y;
+
+    collectable = {x_pos: 400, y_pos: 375, size: 30,isFound:false};
 
 	isLeft  = false;
 	isRight	= false;
@@ -33,7 +37,8 @@ function draw()
 	fill(0,155,0);
 	rect(0, floorPos_y, width, height - floorPos_y); //draw some green ground
 
-	//draw the canyon
+	//////////collectable////////
+	Collectable();
 
 
 	//the game character
@@ -177,17 +182,17 @@ function draw()
 	///////////INTERACTION CODE//////////
 	//Put conditional statements to move the game character below here
 	if(isRight){
-		gameChar_x += 1;
+		gameChar_x += 2.5;
 	}
 	if(isLeft){
-		gameChar_x -= 1;
+		gameChar_x -= 2.5;
 	}
 	if(isPlummeting && gameChar_y == floorPos_y){
 		gameChar_y = floorPos_y - 100;
 	}
 	if(isFalling == true){
 		if(gameChar_y < floorPos_y){
-		gameChar_y += 1;
+		gameChar_y += 2;
 		}
 	}
 	if(gameChar_y < floorPos_y){ 
@@ -198,7 +203,14 @@ function draw()
 	}
 	
 
+    //if statement for collectable
+    if(dist(collectable.x_pos,collectable.y_pos,gameChar_x,gameChar_y)<30){
+        collectable.isFound = true;
+    }
+
 }
+
+
 
 
 function keyPressed()
@@ -242,5 +254,16 @@ function keyReleased()
 	if(keyCode == "38"){
 		isPlummeting = false;
 	}
-
+}
+                                        //////////collectable////////
+function Collectable(){
+    if(collectable.isFound == false){
+	strokeWeight(2);
+	stroke(0,255,0);
+	line(collectable.x_pos+3,collectable.y_pos,collectable.x_pos+7,collectable.y_pos-collectable.size);
+	noStroke();
+	fill(255,0,0);
+	ellipse(collectable.x_pos,collectable.y_pos+5,collectable.size/2,collectable.size);
+	ellipse(collectable.x_pos+7,collectable.y_pos+5,collectable.size/2,collectable.size);
+    }
 }
