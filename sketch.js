@@ -3,6 +3,7 @@ var gameChar_y;
 var floorPos_y;
 
 var collectable;
+var canyon;
 
 var isLeft;
 var isRight;
@@ -18,6 +19,7 @@ function setup()
 	gameChar_y = floorPos_y;
 
     collectable = {x_pos: 400, y_pos: 375, size: 30,isFound:false};
+    canyon = {x_pos:550,width: 100};
 
 	isLeft  = false;
 	isRight	= false;
@@ -30,7 +32,7 @@ function draw()
 
 	///////////DRAWING CODE//////////
 
-	background(100,155,255); //fill the sky blue
+	background(48,25,52); //fill the sky dark pruple
 
 
 	noStroke();
@@ -39,6 +41,8 @@ function draw()
 
 	//////////collectable////////
 	Collectable();
+    //////////canyon/////
+    Canyon();
 
 
 	//the game character
@@ -187,12 +191,15 @@ function draw()
 	if(isLeft){
 		gameChar_x -= 2.5;
 	}
-	if(isPlummeting && gameChar_y == floorPos_y){
-		gameChar_y = floorPos_y - 100;
+	if(isPlummeting ){
+		gameChar_y += 3;
 	}
 	if(isFalling == true){
+        if(gameChar_y == floorPos_y && (gameChar_x < canyon.x_pos || gameChar_x > canyon.x_pos + canyon.width )){
+            gameChar_y = floorPos_y - 100;
+        }
 		if(gameChar_y < floorPos_y){
-		gameChar_y += 2;
+		gameChar_y += 1.25;
 		}
 	}
 	if(gameChar_y < floorPos_y){ 
@@ -206,6 +213,11 @@ function draw()
     //if statement for collectable
     if(dist(collectable.x_pos,collectable.y_pos,gameChar_x,gameChar_y)<30){
         collectable.isFound = true;
+    }
+
+    //if statement for canyon
+    if(gameChar_x > canyon.x_pos+10 && gameChar_x < canyon.x_pos + canyon.width && gameChar_y > floorPos_y-10){
+        isPlummeting = true;
     }
 
 }
@@ -227,7 +239,7 @@ function keyPressed()
 	}
 
 	if(keyCode == "38"){
-		isPlummeting = true;
+		isFalling = true;
 	}
 
 	
@@ -252,7 +264,7 @@ function keyReleased()
 	}
 
 	if(keyCode == "38"){
-		isPlummeting = false;
+		isFalling = false;
 	}
 }
                                         //////////collectable////////
@@ -266,4 +278,13 @@ function Collectable(){
 	ellipse(collectable.x_pos,collectable.y_pos+5,collectable.size/2,collectable.size);
 	ellipse(collectable.x_pos+7,collectable.y_pos+5,collectable.size/2,collectable.size);
     }
+}
+
+    	                 //////////canyon///////////
+function  Canyon(){
+    noStroke();
+	fill(48,25,52);
+	rect(canyon.x_pos,floorPos_y,canyon.width,200);
+	fill(15,94,156);
+	rect(canyon.x_pos,floorPos_y+100,canyon.width,100);
 }
